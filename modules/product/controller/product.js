@@ -17,7 +17,7 @@ const addProduct = async (req, res) => {
             } else {
                 const newProduct = new productModel({ title, desc, price, createdBy: req.user._id, QRCode: url });
                 const savedProduct = await newProduct.save();
-                getIo().emit('post', [savedProduct]);
+                getIo().emit('product', [savedProduct]);
                 res.status(201).json({ message: 'Done', savedProduct });
             }
         })
