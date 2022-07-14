@@ -85,12 +85,16 @@ const softDelete = async (req, res) => {
         if (!product) {
             res.status(400).json({ message: 'in-valid product id' });
         } else {
-            if (!product.isDeleted) {
-                await productModel.findOneAndUpdate({ _id: product._id }, { isDeleted: true });
-                res.status(200).json({ message: 'product is temporary deleted' });
+            if (product.createdBy.equals(req.user._id)) {
+                if (!product.isDeleted) {
+                    await productModel.findOneAndUpdate({ _id: product._id }, { isDeleted: true });
+                    res.status(200).json({ message: 'product is temporary deleted' });
+                } else {
+                    await productModel.findOneAndUpdate({ _id: product._id }, { isDeleted: false });
+                    res.status(200).json({ message: 'product is un deleted' });
+                }
             } else {
-                await productModel.findOneAndUpdate({ _id: product._id }, { isDeleted: false });
-                res.status(200).json({ message: 'product is un deleted' });
+                res.status(400).json({ message: 'you dont own this product' });
             }
         }
     } catch (error) {
@@ -156,12 +160,16 @@ const hideProduct = async (req, res) => {
         if (!product) {
             res.status(400).json({ message: 'in-valid product id' });
         } else {
-            if (product.isHidden) {
-                await productModel.findOneAndUpdate({ _id: product._id, createdBy: req.user._id }, { isHidden: false });
-                res.status(200).json({ message: 'product is visible' });
+            if (product.createdBy.equals(req.user._id)) {
+                if (product.isHidden) {
+                    await productModel.findOneAndUpdate({ _id: product._id }, { isHidden: false });
+                    res.status(200).json({ message: 'product is visible' });
+                } else {
+                    await productModel.findOneAndUpdate({ _id: product._id }, { isHidden: true });
+                    res.status(200).json({ message: 'product is hidden' });
+                }
             } else {
-                await productModel.findOneAndUpdate({ _id: product._id, createdBy: req.user._id }, { isHidden: true });
-                res.status(200).json({ message: 'product is hidden' });
+                res.status(400).json({ message: 'you dont own this product' });
             }
         }
 
