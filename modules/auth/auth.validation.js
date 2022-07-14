@@ -7,6 +7,7 @@ const signup = {
         email: Joi.string().email().required(),
         phone: Joi.number().required(),
         gender: Joi.valid('Male', 'Female').required(),
+        age: Joi.number().optional(),
         password: Joi.string().required(),
         cPassword: Joi.string().valid(Joi.ref('password')).required()
     })
