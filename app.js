@@ -26,7 +26,6 @@ app.use('/api/v1/uploads', express.static(path.join(__dirname, './uploads')));
 
 
 app.get('/mido', async (req, res) => {
-    // const users = await userModel.findOne({phone:'01027179463' });
     const products = await productModel.find({}).populate([
         { path: 'comments' }
     ])
@@ -42,7 +41,6 @@ const job = schedule.scheduleJob('59 59 23 * * *', async function () {
         createdAt: { $gte: moment().startOf('day'), $lte: moment().endOf('day') }
     });
 
-    // // invoice
     const invoiceData = {
         shipping: {
             name: "Amr Hassan",
